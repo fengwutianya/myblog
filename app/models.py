@@ -1,6 +1,7 @@
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 from . import db
+from . import login_manager
 
 
 class Role(db.Model):
@@ -35,3 +36,10 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<Role %s>' % self.username
+
+
+# the callback function that flask_login needs
+# use the unicode user_id to load the user
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
